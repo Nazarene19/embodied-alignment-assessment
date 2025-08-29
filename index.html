@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Embodied Alignment Assessment</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha512-/PqH7w0o8zW2cC8s9dJ2zF3m9oKfJQRG2z0NZp0v8xQZ0hn1b3W1oQx5sZV4wU8x5D8xwX2Y3ChS5mKVLp6Kxw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<style>
+:root{ --brand:#0077ab }
+*{box-sizing:border-box}
+body{font-family:Arial,Helvetica,sans-serif; margin:0; color:#222; background:#fff}
+.wrap{max-width:900px; margin:0 auto; padding:20px}
+.logo{max-width:140px; display:block; margin:12px auto 10px}
+h1,h2,h3{color:var(--brand)}
+.card{background:#fff; border:1px solid #e6ecf1; border-radius:12px; padding:18px; margin:14px 0}
+.grid{display:grid; grid-template-columns:1fr; gap:14px}
+@media(min-width:760px){ .grid{grid-template-columns:1fr 1fr} }
+.type-card{border:1px solid #e6ecf1; border-radius:12px; padding:14px; background:#fafcff}
+.pill{display:inline-block; padding:2px 8px; border-radius:999px; background:#eaf6ef; color:#1d5132; font-size:12px; margin-right:6px}
+.danger{ background:#fff1f1; color:#7a1d1d }
+.section-title{margin-top:0}
+.question{margin:16px 0; padding-bottom:8px; border-bottom:1px dashed #e6ecf1}
+.scale{font-size:12px; color:#666; margin-top:6px}
+.controls{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
+button{padding:10px 16px; border:none; border-radius:8px; cursor:pointer; font-size:15px; background:var(--brand); color:#fff}
+button.secondary{ background:#eef3f7; color:#163447; border:1px solid #d5e2ec }
+.result{margin-top:18px; padding:18px; background:#eef6ff; border:1px solid #cfe2ff; border-radius:12px}
+.centered{max-width:760px; margin:0 auto}
+ul{margin:6px 0 0 18px}
+label{margin-right:8px}
+fieldset{border:none; padding:0; margin:0}
+legend{font-weight:700; margin-bottom:8px}
+input[type="text"], input[type="email"]{padding:8px 10px; border:1px solid #d5e2ec; border-radius:8px; width:260px; max-width:100%}
+small.muted{color:#666}
+hr.soft{border:none;border-top:1px solid #eef1f4;margin:10px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <img src="logorn1.jpg" alt="Logo" class="logo" onerror="this.style.display='none'">
+  <h1>Embodied Alignment Assessment</h1>
+
+  <div class="card">
+    <h2>Purpose</h2>
+    <p class="centered">
+      This assessment reveals your <em>Embodied Alignment Style</em>—how your inner state, energetic influence,
+      cultural attunement, and execution patterns shape outcomes. Use it to calibrate presence, choose the right
+      edge for the moment, and define targeted practices that compound over time.
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>Archetypes at a Glance</h2>
+    <div class="grid">
+      <div class="type-card">
+        <h3 class="section-title">The Stabilizer</h3>
+        <span class="pill">Superpower</span> Nervous-system regulation; anchors clarity.<br>
+        <span class="pill danger">Kryptonite</span> Detachment; delaying disruption.
+      </div>
+      <div class="type-card">
+        <h3 class="section-title">The Activator</h3>
+        <span class="pill">Superpower</span> Energy reset; ignites momentum.<br>
+        <span class="pill danger">Kryptonite</span> Over-driving; rescuing; burnout.
+      </div>
+      <div class="type-card">
+        <h3 class="section-title">The Translator</h3>
+        <span class="pill">Superpower</span> Precise sense-making of undercurrents.<br>
+        <span class="pill danger">Kryptonite</span> Analysis paralysis; signal overload.
+      </div>
+      <div class="type-card">
+        <h3 class="section-title">The Integrator</h3>
+        <span class="pill">Superpower</span> Values-aligned execution and follow-through.<br>
+        <span class="pill danger">Kryptonite</span> Rigidity; dismissing emergence.
+      </div>
+      <div class="type-card">
+        <h3 class="section-title">Hybrid Leader</h3>
+        <span class="pill">Superpower</span> Context-switching with coherence.<br>
+        <span class="pill danger">Kryptonite</span> Diffused focus; role sprawl.
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Instructions</h2>
+    <p class="centered">Rate each statement from <strong>1</strong> (not at all true) to <strong>5</strong> (very true).
+      Your highest section(s) determine your primary archetype.</p>
+
+    <!-- Optional participant info -->
+    <div class="card" style="background:#fbfdff">
+      <h3>Your Info (optional)</h3>
+      <label> Name <br><input type="text" id="pName" placeholder="Your name"></label>
+      &nbsp;&nbsp;
+      <label> Email <br><input type="email" id="pEmail" placeholder="you@example.com"></label>
+      <p><small class="muted">We store results securely for cohort insights. You can request deletion at any time.</small></p>
+      <hr class="soft">
+    </div>
+
+    <form id="quiz">
+      <!-- Static questionnaire -->
+      <fieldset class="section">
+        <legend>Inner Orientation</legend>
+        <div class="question"><p>I can feel when I am "off" before others notice.</p><label><input type="radio" name="q0" value="1" required> 1</label><label><input type="radio" name="q0" value="2"> 2</label><label><input type="radio" name="q0" value="3"> 3</label><label><input type="radio" name="q0" value="4"> 4</label><label><input type="radio" name="q0" value="5"> 5</label><div class="scale">1 = Not at all true ··· 5 = Very true</div></div>
+        <div class="question"><p>I know how to pause without losing momentum.</p><label><input type="radio" name="q1" value="1" required> 1</label><label><input type="radio" name="q1" value="2"> 2</label><label><input type="radio" name="q1" value="3"> 3</label><label><input type="radio" name="q1" value="4"> 4</label><label><input type="radio" name="q1" value="5"> 5</label><div class="scale">1 = Not at all true ··· 5 = Very true</div></div>
+        <div class="question"><p>My presence naturally re-centers a tense or chaotic room.</p><label><input type="radio" name="q2" value="1" required> 1</label><label><input type="radio" name="q2" value="2"> 2</label><label><input type="radio" name="q2" value="3"> 3</label><label><input type="radio" name="q2" value="4"> 4</label><label><input type="radio" name="q2" value="5"> 5</label><div class="scale">1 = Not at all true ··· 5 = Very true</div></div>
+        <div class="question"><p>I stay rooted in what matters most, regardless of external urgency.</p><label><input type="radio" name="q3" value="1" required> 1</label><label><input type="radio" name="q3" value="2"> 2</label><label><input type="radio" name="q3" value="3"> 3</label><label><input type="radio" name="q3" value="4"> 4</label><label><input type="radio" name="q3" value="5"> 5</label><div class="scale">1 = Not at all true ··· 5 = Very true</div></div>
+        <div class="question"><p>I can lead without forcing or over-functioning.</p><label><input type="radio" name="q4" value="1" required> 1</label><label><input type="radio" name="q4" value="2"> 2</label><label><input type="radio" name="q4" value="3"> 3</label><label><input type="radio" name="q4" value="4"> 4</label><label><input type="radio" name="q4" value="5"> 5</label><div class="scale">1 = Not at all true ··· 5 = Very true</div></div>
+      </fieldset>
+
+      <fieldset class="section">
+        <legend>Energetic Influence</legend>
+        <div class="question"><p>People often feel more calm, clear, or energized after speaking with me.</p><label><input type="radio" name="q5" value="1" required> 1</label><label><input type="radio" name="q5" value="2"> 2</label><label><input type="radio" name="q5" value="3"> 3</label><label><input type="radio" name="q5" value="4"> 4</label><label><input type="radio" name="q5" value="5"> 5</label><div class="scale">1 = Not at all true ··· 5 = Very true</div></div>
+        <div class="question"><p>I can feel when a team is "off rhythm" before issues are verbalized.</p><label><input type="radio" name="q6" value="1" required> 1</label><label><input type="radio" name="q6" value="2"> 2</label><label><input type="radio" name="q6" value="3"> 3</label><label><input type="radio" name="q6" value="4"> 4</label><label><input type="radio" name="q6" value="5"> 5</label><div class="scale">1 = Not at all true ··· 5 = Very true</div></div>
+        <div class="question"><p>My interventions often shift the energy in a space.</p><label><input type="radio" name="q7" value="1" required> 1</label><label><input type="radio" name="q7" value="2"> 2</label><label><input type="radio" name="q7" value="3"> 3</label><label><input type="radio" name="q7" value="4"> 4</label><label><input type="radio" name="q7" value="5"> 5</label><div class="scale">1 = Not at all true ··· 5 = Very true</div></div>
+        <div class="question"><p>I guide others without needing to convince or persuade.</p><label><input type="radio" name="q8" value="1" required> 1</label><label><input type="radio" name="q8" value="2"> 2</label><label><input type="radio" name="q8" value="3"> 3</label><label><input type="radio" name="q8" value="4"> 4</label><label><input type="radio" name="q8" value="5"> 5</label><div class="scale">1 = Not at all true ··· 5 = Very true</div></div>
+        <div class="question"><p>I intuitively know when to disrupt and when to restore.</p><label><input type="radio" name="q9" value="1" required> 1</label><label><input type="radio" name="q9" value="2"> 2</label><label><input type="radio" name="q9" value="3"> 3</label><label><input type="radio" name="q9" value="4"> 4</label><label><input type="radio" name="q9" value="5"> 5</label><div class="scale">1 = Not at all true ··· 5 = Very true</div></div>
+      </fieldset>
+
+      <fieldset class="section">
+        <legend>Cultural Attunement</legend>
+        <div class="question"><p>I sense when alignment is performative versus real.</p><label><input type="radio" name="q10" value="1" required> 1</label><label><input type="radio" name="q10" value="2"> 2</label><label><input type="radio" name="q10" value="3"> 3</label><label><input type="radio" name="q10" value="4"> 4</label><label><input type="radio" name="q10" value="5"> 5</label><div class="scale">1 = Not at all true ··· 5 = Very true</div></div>
+        <div class="question"><p>I recognize subtle power dynamics and name them without drama.</p><label><input type="radio" name="q11" value="1" required> 1</label><label><input type="radio" name="q11" value="2"> 2</label><label><input type="radio" name="q11" value="3"> 3</label><label><input type="radio" name="q11" value="4"> 4</label><label><input type="radio" name="q11" value="5"> 5</label><div class="scale">1 = Not at all true ··· 5 = Very true</div></div>
+        <div class="question"><p>I can see the "invisible rules" that shape group behavior.</p><label><input type="radio" name="q12" value="1" required> 1</label><label><input type="radio" name="q12" value="2"> 2</label><label><input type="radio" name="q12" value="3"> 3</label><label><input type="radio" name="q12" value="4"> 4</label><label><input type="radio" name="q12" value="5"> 5</label><div class="scale">1 = Not at all true ··· 5 = Very true</div></div>
+        <div class="question"><p>I bring language to what others are sensing but haven’t articulated.</p><label><input type="radio" name="q13" value="1" required> 1</label><label><input type="radio" name="q13" value="2"> 2</label><label><input type="radio" name="q13" value="3"> 3</label><label><input type="radio" name="q13" value="4"> 4</label><label><input type="radio" name="q13" value="5"> 5</label><div class="scale">1 = Not at all true ··· 5 = Very true</div></div>
+        <div class="question"><p>I often serve as a bridge between visionary leadership and grounded execution.</p><label><input type="radio" name="q14" value="1" required> 1</label><label><input type="radio" name="q14" value="2"> 2</label><label><input type="radio" name="q14" value="3"> 3</label><label><input type="radio" name="q14" value="4"> 4</label><label><input type="radio" name="q14" value="5"> 5</label><div class="scale">1 = Not at all true ··· 5 = Very true</div></div>
+      </fieldset>
+
+      <fieldset class="section">
+        <legend>Embodied Execution</legend>
+        <div class="question"><p>I move from insight to aligned action without overthinking.</p><label><input type="radio" name="q15" value="1" required> 1</label><label><input type="radio" name="q15" value="2"> 2</label><label><input type="radio" name="q15" value="3"> 3</label><label><input type="radio" name="q15" value="4"> 4</label><label><input type="radio" name="q15" value="5"> 5</label><div class="scale">1 = Not at all true ··· 5 = Very true</div></div>
+        <div class="question"><p>I recover quickly from disorientation or internal misalignment.</p><label><input type="radio" name="q16" value="1" required> 1</label><label><input type="radio" name="q16" value="2"> 2</label><label><input type="radio" name="q16" value="3"> 3</label><label><input type="radio" name="q16" value="4"> 4</label><label><input type="radio" name="q16" value="5"> 5</label><div class="scale">1 = Not at all true ··· 5 = Very true</div></div>
+        <div class="question"><p>I can hold paradox (vision and limits, intuition and logic) without breaking.</p><label><input type="radio" name="q17" value="1" required> 1</label><label><input type="radio" name="q17" value="2"> 2</label><label><input type="radio" name="q17" value="3"> 3</label><label><input type="radio" name="q17" value="4"> 4</label><label><input type="radio" name="q17" value="5"> 5</label><div class="scale">1 = Not at all true ··· 5 = Very true</div></div>
+        <div class="question"><p>I act from calm confidence, not reactive performance.</p><label><input type="radio" name="q18" value="1" required> 1</label><label><input type="radio" name="q18" value="2"> 2</label><label><input type="radio" name="q18" value="3"> 3</label><label><input type="radio" name="q18" value="4"> 4</label><label><input type="radio" name="q18" value="5"> 5</label><div class="scale">1 = Not at all true ··· 5 = Very true</div></div>
+        <div class="question"><p>I trust what my body knows, even when data disagrees.</p><label><input type="radio" name="q19" value="1" required> 1</label><label><input type="radio" name="q19" value="2"> 2</label><label><input type="radio" name="q19" value="3"> 3</label><label><input type="radio" name="q19" value="4"> 4</label><label><input type="radio" name="q19" value="5"> 5</label><div class="scale">1 = Not at all true ··· 5 = Very true</div></div>
+      </fieldset>
+
+      <div class="controls">
+        <button type="submit" id="submitBtn">See My Result</button>
+        <button type="button" id="resetBtn" class="secondary">Clear</button>
+        <button type="button" id="downloadBtn" class="secondary" style="display:none">Download PDF Report</button>
+      </div>
+      <p class="centered"><small class="muted">
+        By submitting, you consent to storage of your assessment responses for analysis and program improvement.
+      </small></p>
+    </form>
+  </div>
+
+  <div id="result" class="result centered" style="display:none;"></div>
+</div>
+
+<script>
+// ========= Config for optional server submission =========
+const SUBMIT_ENDPOINT = ""; // e.g., "https://<your-netlify-site>.netlify.app/.netlify/functions/submit"
+
+// ========= Helpers =========
+const BRAND_RGB = [0,119,171];
+function sectionOf(i){ if(i<5) return "Inner Orientation"; if(i<10) return "Energetic Influence"; if(i<15) return "Cultural Attunement"; return "Embodied Execution"; }
+function toArch(sec){ return {"Inner Orientation":"The Stabilizer","Energetic Influence":"The Activator","Cultural Attunement":"The Translator","Embodied Execution":"The Integrator"}[sec]; }
+
+// ========= Profiles =========
+const profiles = {
+  "The Stabilizer": {
+    section:"Inner Orientation",
+    identity:"The Stabilizer is the grounding presence. They hold steady when others unravel, providing clarity and calm direction without force.",
+    superpower:"Nervous-system regulation that stabilizes teams; presence that anchors clarity.",
+    kryptonite:"Detachment or under-communication; waiting too long to disrupt misalignment.",
+    strengths:[
+      "Centering presence reduces reactivity and restores pace.",
+      "High signal-to-noise discernment under pressure.",
+      "Models calm decision hygiene others mirror.",
+      "Creates psychological safety through steadiness and non-reactivity."
+    ],
+    actions:[
+      "Define a 'disrupt threshold'—conditions that trigger timely intervention.",
+      "Offer two-bullet clarity briefings (owner + next step) after pauses.",
+      "Schedule a weekly micro-risk where you speak early, not last."
+    ],
+    when:"Crisis, ambiguity, or collective fatigue—when the team needs an anchor to re-center and slow reactivity."
+  },
+  "The Activator": {
+    section:"Energetic Influence",
+    identity:"The Activator is the spark. They read the emotional field, reset the energy, and catalyze decisive movement.",
+    superpower:"Rapid energy reset and momentum ignition; catalyzes decisive movement.",
+    kryptonite:"Over-driving or rescuing; burnout from resetting others instead of building capacity.",
+    strengths:[
+      "Reads the emotional field and creates lift fast.",
+      "Unsticks teams and converts hesitation into motion.",
+      "Signals confidence that others borrow in ambiguity."
+    ],
+    actions:[
+      "Run a capacity check—what can the team own without you?",
+      "Teach a 3-step reset so you’re not the only capacitor.",
+      "Design sprints with blocked recovery days."
+    ],
+    when:"When momentum stalls, morale dips, or the group needs to shift from analysis to action."
+  },
+  "The Translator": {
+    section:"Cultural Attunement",
+    identity:"The Translator is the sense-maker. They detect subtle undercurrents and articulate what’s unspoken, creating bridges between vision and reality.",
+    superpower:"Sense-making and precise naming of undercurrents; diplomacy with truth.",
+    kryptonite:"Analysis paralysis or over-empathy; signal overload without action.",
+    strengths:[
+      "Turns invisible dynamics into shared language and options.",
+      "Builds trust by naming tensions without blame.",
+      "Bridges executive vision with ground truth."
+    ],
+    actions:[
+      "End sense-making with a two-option proposal and a timebox.",
+      "Limit inputs—focus on three signals that matter; ignore the rest for a week.",
+      "Pair with an Integrator to co-own next steps and cadence."
+    ],
+    when:"When hidden tensions or unspoken rules are shaping behavior and clarity is needed to restore alignment."
+  },
+  "The Integrator": {
+    section:"Embodied Execution",
+    identity:"The Integrator is the builder. They transform vision into coherent, values-aligned action and execution.",
+    superpower:"Converts insight into coherent, values-aligned action and follow-through.",
+    kryptonite:"Rigidity or over-optimization; dismissing emergent signals and intuition.",
+    strengths:[
+      "Creates stable execution rhythms and reliable delivery.",
+      "Holds paradox between vision and constraints.",
+      "Translates principles into operating behaviors."
+    ],
+    actions:[
+      "Add a recalibration checkpoint mid-cycle to test assumptions.",
+      "Invite a Stabilizer/Activator to pressure-test plan flexibility.",
+      "Run a monthly 'stop doing' review to reduce process creep."
+    ],
+    when:"When a vision must be operationalized into sustainable systems and consistent results."
+  },
+  "Hybrid Leader": {
+    section:"Multimodal",
+    identity:"The Hybrid Leader flexes contextually, weaving multiple archetypes depending on the moment.",
+    superpower:"Context-switching with coherence; bridges sensing, energy, culture, and execution.",
+    kryptonite:"Diffused focus; role sprawl without a clear primary edge by context.",
+    strengths:[
+      "Leads from multiple edges as conditions change.",
+      "Holds integrative maps across people, pace, and process.",
+      "Adapts language and energy to audience and stakes."
+    ],
+    actions:[
+      "Declare a primary edge per project (e.g., 'Leading as Translator here').",
+      "Pre-commit one or two 'no’s' per week to protect depth and recovery.",
+      "Track which edge worked where; refine your situational playbook."
+    ],
+    when:"In complex, ambiguous environments that demand agility across modes."
+  }
+};
+
+// ========= Form handling =========
+const form    = document.getElementById('quiz');
+const result  = document.getElementById('result');
+const dlBtn   = document.getElementById('downloadBtn');
+const resetBtn= document.getElementById('resetBtn');
+
+form.addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  const data = new FormData(form);
+
+  // Compute totals & collect answers
+  const totals = {"Inner Orientation":0,"Energetic Influence":0,"Cultural Attunement":0,"Embodied Execution":0};
+  const answers = [];
+  for(let i=0;i<20;i++){
+    const val = parseInt(data.get('q'+i),10);
+    answers.push(val);
+    totals[sectionOf(i)] += val;
+  }
+
+  // Rank sections
+  const ordered = Object.entries(totals).sort((a,b)=>b[1]-a[1]);
+  const topScore = ordered[0][1];
+  const ties = ordered.filter(([_,s])=>s===topScore).map(([sec])=>sec);
+  const primary = ties.length>1 ? "Hybrid Leader" : toArch(ordered[0][0]);
+
+  // Secondary (if a clear winner)
+  let secondaryLabel = "";
+  if(ties.length===1){
+    const secondScore = ordered.find(([_,s])=>s<topScore)?.[1];
+    const seconds = ordered.filter(([_,s])=>s===secondScore).map(([sec])=>sec);
+    if(secondScore!==undefined && seconds.length>0) secondaryLabel = toArch(seconds[0]);
+  }
+
+  // Build result UI
+  const a = profiles[primary];
+  const strengths = a.strengths.map(s=>`<li>${s}</li>`).join('');
+  const actions = a.actions.map(s=>`<li>${s}</li>`).join('');
+
+  let nextEdgeHtml = "";
+  if(secondaryLabel){
+    const b=profiles[secondaryLabel];
+    const nextAct=b.actions.map(s=>`<li>${s}</li>`).join('');
+    nextEdgeHtml = `
+      <div class="card centered" style="margin-top:12px">
+        <h3>Your Next Edge: ${secondaryLabel} (${b.section})</h3>
+        <ul>${nextAct}</ul>
+      </div>`;
+  }
+
+  result.innerHTML = `
+    <h2>Your Result: ${primary} <span style="font-weight:normal;color:#555">(${a.section})</span></h2>
+    <p><strong>Core Identity:</strong> ${a.identity}</p>
+    <p><span class="pill">Superpower</span> ${a.superpower}</p>
+    <p><span class="pill danger">Kryptonite</span> ${a.kryptonite}</p>
+    <div class="grid">
+      <div class="type-card"><strong>Strengths</strong><ul>${strengths}</ul></div>
+      <div class="type-card"><strong>Growth Edge — Actionable</strong><ul>${actions}</ul></div>
+    </div>
+    <div class="card centered" style="margin-top:12px">
+      <h3>When to Lead from this Edge</h3>
+      <p>${a.when}</p>
+    </div>
+    ${nextEdgeHtml}
+  `;
+  result.style.display = 'block';
+  dlBtn.style.display  = 'inline-block';
+
+  // Optional: send to repo via Netlify function
+  const participant = {
+    name:  (document.getElementById('pName')?.value || "").trim() || null,
+    email: (document.getElementById('pEmail')?.value || "").trim() || null
+  };
+  if (SUBMIT_ENDPOINT) {
+    try {
+      const payload = {
+        submittedAt: new Date().toISOString(),
+        participant,
+        totals,
+        primaryArchetype: primary,
+        secondaryArchetype: secondaryLabel || null,
+        answers,
+        version: "ea-assessment-v1"
+      };
+      const res = await fetch(SUBMIT_ENDPOINT, {
+        method:"POST",
+        headers:{ "Content-Type":"application/json" },
+        body: JSON.stringify(payload)
+      });
+      const out = await res.json().catch(()=>({}));
+      if(!res.ok || out.ok === false){
+        console.warn("Submission save failed:", out);
+      } else {
+        console.log("Submission saved:", out);
+      }
+    } catch(err){
+      console.warn("Submission error:", err);
+    }
+  }
+});
+
+// ========= PDF Export =========
+dlBtn.addEventListener('click', ()=>{
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit:'pt', format:'letter' });
+  const margin=54, pageH=doc.internal.pageSize.getHeight(), pageW=doc.internal.pageSize.getWidth(), maxW=pageW-margin*2;
+  let y=margin;
+  function wrap(t){ return doc.splitTextToSize(t, maxW); }
+  function add(lines){ for(const line of lines){ if(y+16>pageH-margin){ doc.addPage(); y=margin; } doc.text(line, margin, y); y+=16; } }
+  function heading(t){ doc.setTextColor(...BRAND_RGB); doc.setFont('helvetica','bold'); doc.setFontSize(16); add(wrap(t)); y+=6; doc.setTextColor(0,0,0); doc.setFont('helvetica','normal'); doc.setFontSize(11); }
+
+  // Try adding logo
+  try{
+    const img = new Image();
+    img.onload = ()=> {
+      try{
+        const h=48, r=h/img.height, w=Math.min(img.width*r, 140);
+        doc.addImage(img, 'JPEG', margin, y, w, h);
+        doc.setTextColor(...BRAND_RGB);
+        doc.setFont('helvetica','bold'); doc.setFontSize(16);
+        doc.text('Embodied Alignment Assessment', margin+w+12, y+24);
+        y += h + 12;
+        buildBody();
+      } catch(e){ titleOnly(); }
+    };
+    img.onerror = titleOnly;
+    img.src = 'logorn1.jpg';
+  }catch(e){ titleOnly(); }
+
+  function titleOnly(){
+    doc.setTextColor(...BRAND_RGB);
+    doc.setFont('helvetica','bold'); doc.setFontSize(16);
+    doc.text('Embodied Alignment Assessment', margin, y);
+    y += 24;
+    buildBody();
+  }
+
+  function buildBody(){
+    // Extract rendered HTML result
+    const resEl = document.getElementById('result');
+    const primaryLine = resEl.querySelector('h2')?.innerText || 'Your Result';
+    const blocks = Array.from(resEl.querySelectorAll('p, h3, li')).map(el=>el.innerText);
+
+    heading(primaryLine);
+    for(const text of blocks){
+      if(text.trim().length===0) continue;
+      add(wrap(text));
+      y+=4;
+    }
+    doc.save('Embodied_Alignment_Report.pdf');
+  }
+});
+
+// ========= Reset =========
+resetBtn.addEventListener('click', ()=>{
+  form.reset();
+  result.style.display='none';
+  dlBtn.style.display='none';
+  window.scrollTo({ top:0, behavior:'smooth' });
+});
+</script>
+</body>
+</html>
